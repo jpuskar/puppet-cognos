@@ -1,0 +1,7 @@
+# ref: https://github.com/puppetlabs/puppetlabs_spec_helper#fixtures-examples
+# the symlinks are relative to the fixtures directory, hence all the '..'
+fixtures:
+  repositories:
+    stdlib: "git://github.com/puppetlabs/puppetlabs-stdlib"
+    firewalld: "git://github.com/crayfishx/puppet-firewalld"
+    #db2: "git://github.com/jpuskar/puppet-db2"
