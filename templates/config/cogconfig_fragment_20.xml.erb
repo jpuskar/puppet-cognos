@@ -1,0 +1,580 @@
+
+        <!-- Cognos: Defines a group of properties related to authentication that applies to all
+             users.  -->
+        <!-- Use this group of properties to control access to resources based on user identity.
+             Do not delete the namespace, or you will not be able to save your configuration.
+             To restore the namespace, right-click Authentication, click New, Namespace Type,
+             select the Cognos Namespace from the list of available types and specify a name.  -->
+        <crn:instance name="Cognos" class="Cognos">
+          <!-- allowAnon: Specifies whether anonymous access is allowed.  -->
+          <!-- By default, anonymous authentication process doesn't require the user to provide
+               logon credentials. The anonymous authentication uses a pre-defined account under
+               which all anonymous users are logged in.  -->
+          <crn:parameter name="allowAnon">
+            <crn:value xsi:type="xsd:boolean"><%= scope['cognos::allow_anon'] %></crn:value>
+          </crn:parameter>
+          <crn:parameter name="disableCM">
+            <crn:value xsi:type="xsd:boolean"><%= scope['cognos::disable_cm'] %></crn:value>
+          </crn:parameter>
+        </crn:instance>
+      </crn:instances>
+    </crn:value>
+  </crn:parameter>
+  <!-- CRYPTO: Defines a group of properties that enables secure communication between the
+       product components and data encryption.  -->
+  <!-- To use a cryptographic provider that already exists in your environment, you must
+       delete the default provider. You can only use one cryptographic provider at a time.
+       Right-click Cryptography, click New and then click Provider to use a different cryptographic
+       provider. After you select the provider, you can use this group of properties to
+       protect the information in your system from unauthorized access.  -->
+  <crn:parameter name="CRYPTO" opaque="true">
+    <crn:value>
+      <!-- cryptoStandardConformance: Specifies the cryptographic standard that IBM Cognos should
+           enforce.  -->
+      <!-- Use this property to specify what cryptographic standard should be enforced in this
+           install. This parameter may cause the save operation to fail if other parameters
+           are changed to values not allowed in the selected standard.  -->
+      <crn:parameter name="cryptoStandardConformance">
+        <crn:value xsi:type="xsd:string">IBM_Cognos</crn:value>
+      </crn:parameter>
+      <!-- localCSK: Specifies whether the common symmetric key can be stored on the local computer.  -->
+      <!-- If this value is set to false, then the Common Symmetric Key (CSK) is not stored
+           locally. In this case, each cryptographic operation requiring the CSK must fetch
+           it from the server.  -->
+      <crn:parameter name="localCSK">
+        <crn:value xsi:type="xsd:boolean">true</crn:value>
+      </crn:parameter>
+      <!-- CSKPath: Specifies the location of the common symmetric key store database.  -->
+      <!-- For distributed installations, set this property to point to the computer where you
+           created the key store. The key store is in a global location to provide access from
+           different computers.  -->
+      <crn:parameter name="CSKPath">
+        <crn:value xsi:type="cfg:folderPath">../configuration/csk</crn:value>
+      </crn:parameter>
+      <!-- CSKPathPassword: Specifies the password used to protect the common symmetric key
+           store database.  -->
+      <!-- This password provides an additional level of security not available when storing
+           keys in files. By default, this password is immediately encrypted when you save your
+           configuration.  -->
+      <crn:parameter name="CSKPathPassword">
+        <crn:value xsi:type="cfg:systemPassword"></crn:value>
+      </crn:parameter>
+      <!-- CSKLifetime: For servers running Content Manager, specifies the maximum number of
+           days that the CSK is valid.  -->
+      <!-- The validity period that you set for the CSK depends on a number of factors, such
+           as the sensitivity of your data.  -->
+      <crn:parameter name="CSKLifetime">
+        <crn:value xsi:type="xsd:long">365</crn:value>
+      </crn:parameter>
+      <!-- SSLMutualAuthentication: Specifies whether mutual authentication is required.  -->
+      <!-- Set the value of this property to 'true' if both components or computers involved
+           in the communication must prove their identity. Mutual authentication is carried
+           out by using certificates, which are exchanged by the communicating components at
+           the time they initiate connections.  -->
+      <crn:parameter name="SSLMutualAuthentication">
+        <crn:value xsi:type="xsd:boolean">false</crn:value>
+      </crn:parameter>
+      <!-- SSLConfidentiality: Specifies whether to use encryption to ensure confidentiality
+           of all transmitted information.  -->
+      <!-- If the value of this property is set to 'false', information that is transmitted
+           will not be encrypted.  -->
+      <crn:parameter name="SSLConfidentiality">
+        <crn:value xsi:type="xsd:boolean">true</crn:value>
+      </crn:parameter>
+      <!-- digestAlgorithm: Specifies the digest algorithm.  -->
+      <!-- Use this property to specify the message digest algorithm that is used when hashing
+           data.  -->
+      <crn:parameter name="digestAlgorithm">
+        <crn:value xsi:type="xsd:string">SHA-256</crn:value>
+      </crn:parameter>
+      <!-- signingKeyPairAlgorithm: Specifies the signing key pair algorithm.  -->
+      <!-- Use this property to specify the algorithm that is used when signing data.  -->
+      <crn:parameter name="signingKeyPairAlgorithm">
+        <crn:value xsi:type="xsd:string">RSA</crn:value>
+      </crn:parameter>
+      <!-- cryptoProvider: Specifies the cryptographic provider used by the product.  -->
+      <!-- The value of this property is set when you select the cryptographic provider from
+           the list of available types. You cannot change the value of this property.  -->
+      <crn:instances name="cryptoProvider">
+        <!-- Cognos: Defines a group of properties for the Cognos cryptographic provider.  -->
+        <!-- Configure these properties to set the encryption services and CA service for all
+             components accessing a single content store.  -->
+        <crn:instance name="Cognos" class="CognosCrypto">
+          <!-- certificateLocation: Specifies the location of trusted certificates.  -->
+          <crn:parameter name="certificateLocation">
+            <crn:value xsi:type="cfg:folderPath">../configuration/certs</crn:value>
+          </crn:parameter>
+          <!-- cognosCryptoConfidentialityAlgorithm: Specify the confidentiality algorithm.  -->
+          <!-- Use this property to specify the encryption algorithm when transmitting information.  -->
+          <crn:parameter name="cognosCryptoConfidentialityAlgorithm">
+            <crn:value xsi:type="xsd:string">AES</crn:value>
+          </crn:parameter>
+          <!-- cognosPDFConfidentialityAlgorithm: Specify the PDF confidentiality algorithm.  -->
+          <!-- Use this property to specify the encryption algorithm when encrypting PDF data.  -->
+          <crn:parameter name="cognosPDFConfidentialityAlgorithm">
+            <crn:value xsi:type="xsd:string">AES</crn:value>
+          </crn:parameter>
+          <!-- cognosCryptoCiphersuite: Specifies a list of supported ciphersuites in priority sequence.  -->
+          <!-- Use this property to specify what ciphersuites are acceptable in this install. The
+               selected ciphersuites are then presented to the SSL negotiation in priority sequence
+               for both client and server sides of the negotiation. At least one of the selected
+               ciphersuites between configured client and server platforms must match.  -->
+          <crn:parameter name="cognosCryptoCiphersuite" opaque="true">
+            <crn:value xsi:type="cfg:sortedArray">
+              <crn:item xsi:type="xsd:string" order="1">RSA-RSA-AES(128)CBC-SHA</crn:item>
+              <crn:item xsi:type="xsd:string" order="3">RSA-RSA-DES(168)CBC3-SHA</crn:item>
+            </crn:value>
+          </crn:parameter>
+          <!-- keystoreFilePassword: Specifies the password used to protect the key store.  -->
+          <!-- This password is required to secure the IBM Cognos keystore. It provides an extra
+               layer of security by encrypting the keystore file using a password.  -->
+          <crn:parameter name="keystoreFilePassword">
+            <crn:value xsi:type="cfg:systemPassword">NoPassWordSet</crn:value>
+          </crn:parameter>
+          <!-- serverCommonName: Specifies the common name (CN) portion of the distinguished name
+               (DN) for this computer.  -->
+          <!-- An example of a common name is the host name of the computer.  -->
+          <crn:parameter name="serverCommonName">
+            <crn:value xsi:type="xsd:string">CAMUSER</crn:value>
+          </crn:parameter>
+          <!-- distinguishedNameOrganization: Specifies the organization name (O) used in the distinguished
+               name (DN).  -->
+          <!-- An example of an organization is MyCompany.  -->
+          <crn:parameter name="distinguishedNameOrganization">
+            <crn:value xsi:type="xsd:string">Cognos</crn:value>
+          </crn:parameter>
+          <!-- distinguishedNameCountry: Specifies the two-letter country or region code used in
+               the distinguished name (DN).  -->
+          <!-- For example, the code for Japan is JP.  -->
+          <crn:parameter name="distinguishedNameCountry">
+            <crn:value xsi:type="xsd:string">CA</crn:value>
+          </crn:parameter>
+          <!-- thirdPartyCA: Specifies whether to use an external Certificate Authority.  -->
+          <!-- If this value is set to true, the IBM Cognos Certificate Authority service is not
+               used. A third party Certificate Authority will manually process certificate requests.  -->
+          <crn:parameter name="thirdPartyCA">
+            <crn:value xsi:type="xsd:boolean">false</crn:value>
+          </crn:parameter>
+          <!-- certificateAuthorityServiceCommonName: Specifies the common name (CN) portion of
+               the distinguished name (DN) for the Certificate Authority service computer.  -->
+          <!-- An example of a common name is the host name of the computer. Do not use localhost.  -->
+          <crn:parameter name="certificateAuthorityServiceCommonName">
+            <crn:value xsi:type="xsd:string">CA</crn:value>
+          </crn:parameter>
+          <!-- certificateAuthorityServicePassword: Specifies the password used to validate certificate
+               requests sent to the Certificate Authority service.  -->
+          <!-- This property must be the same for clients using the Certificate Authority and the
+               Certificate Authority service itself. For example, the password you specify for IBM
+               Cognos installations that do not have Content Manager must match the password you
+               specify for the installation that has Content Manager. The Certificate Authority
+               service is installed with the Content Manager. By default, this password is immediately
+               encrypted when you save your configuration.  -->
+          <crn:parameter name="certificateAuthorityServicePassword">
+            <crn:value xsi:type="cfg:systemPassword"></crn:value>
+          </crn:parameter>
+          <!-- certificateAuthorityServiceCertificateLifetime: Specifies the maximum number of days
+               that a certificate signed by the Certificate Authority service is valid.  -->
+          <!-- The validity period that you set for certificates depends on a number of factors,
+               such as the strength of the private key used to sign the certificate.  -->
+          <crn:parameter name="certificateAuthorityServiceCertificateLifetime">
+            <crn:value xsi:type="xsd:long">730</crn:value>
+          </crn:parameter>
+        </crn:instance>
+      </crn:instances>
+    </crn:value>
+  </crn:parameter>
+  <!-- Replication: Defines general properties related to replication of user session data.  -->
+  <!-- Use this group of properties to set the settings for IBM Cognos authentication services
+       to enable user session replication.  -->
+  <crn:parameter name="Replication" opaque="true">
+    <crn:value>
+      <!-- pdcEnableReplication: Specifies whether user session replcation is enabled.  -->
+      <!-- Use this property to enable or disable user session data replication across authentication
+           services.  -->
+      <crn:parameter name="pdcEnableReplication">
+        <crn:value xsi:type="xsd:boolean">true</crn:value>
+      </crn:parameter>
+      <!-- pdcPeerPort: Specifies the port used for peer discovery.  -->
+      <!-- A value of 0 means that the server will select an available port automatically. When
+           a value other than 0 is specified, ensure that you specify a port that is not already
+           in use. The port communication uses mutually authenticated SSL/TLS protocol.  -->
+      <crn:parameter name="pdcPeerPort">
+        <crn:value xsi:type="xsd:unsignedShort">0</crn:value>
+      </crn:parameter>
+      <!-- pdcRMIPort: Specifies the port used for RMI communication.  -->
+      <!-- A value of 0 means that the server will select an available port automatically. The
+           RMI port is the communication port used by the Java Remote Method Invocation API.
+           When a value other than 0 is specified, ensure that you specify a port that is not
+           already in use. The port communication uses mutually authenticated SSL/TLS protocol.  -->
+      <crn:parameter name="pdcRMIPort">
+        <crn:value xsi:type="xsd:unsignedShort">0</crn:value>
+      </crn:parameter>
+      <!-- advancedProperties: Specifies a set of advanced properties.  -->
+      <!-- The user needs to provide the name and the value for each advanced property.  -->
+      <crn:parameter name="advancedProperties" opaque="true">
+        <crn:value xsi:type="cfg:array"/>
+      </crn:parameter>
+    </crn:value>
+  </crn:parameter>
+  <!-- CAF: Defines a group of properties to configure the IBM Cognos Application Firewall.  -->
+  <!-- The IBM Cognos Application Firewall is an essential component of product security
+       helping to provide protection against penetration vulnerabilities. Disabling the
+       IBM Cognos Application Firewall will remove this protection; therefore, this should
+       not be done under normal circumstances.  -->
+  <crn:parameter name="CAF" opaque="true">
+    <crn:value>
+      <!-- caf_enabled: Specifies whether to enable IBM Cognos Application Firewall validation.  -->
+      <!-- The IBM Cognos Application Firewall is an essential component of product security
+           helping to provide protection against penetration vulnerabilities. Disabling the
+           IBM Cognos Application Firewall will remove this protection; therefore, this should
+           not be done under normal circumstances. In addition, if third party XSS checking
+           is enabled, CAF validation must also be enabled.  -->
+      <crn:parameter name="caf_enabled">
+        <crn:value xsi:type="xsd:boolean">true</crn:value>
+      </crn:parameter>
+      <!-- caf_validDomainList: Specifies valid domain and/or host name values for your configuration.  -->
+      <!-- The IBM Cognos Application Firewall will validate hostname and domain names used
+           or passed in a request. You may add additional host names or domain names to support
+           your configuration and system topology. For example, add .mycompany.com to allow
+           the domains from mycompany.com. You may also allow a domain and all its sub-domains
+           by adding a wildcard at the beginning of the domain such as, *.mycompany.com.  -->
+      <crn:parameter name="caf_validDomainList" opaque="true">
+        <crn:value xsi:type="cfg:array"/>
+      </crn:parameter>
+      <!-- caf_tpXSSCheckingUsed: Specifies whether CAF support for third party cross site scripting
+           checking is enabled.  -->
+      <!-- Enables CAF to support third party cross site scripting checking by encoding requests
+           to prevent discouraged characters from being rejected by the third party checking.
+           Enable this property if you have a tool that is performing XSS of GET requests. You
+           can only enable this property when CAF validation is also enabled. By default, the
+           third party XSS characters <, ' and > will be encoded.  -->
+      <crn:parameter name="caf_tpXSSCheckingUsed">
+        <crn:value xsi:type="xsd:string">false</crn:value>
+      </crn:parameter>
+    </crn:value>
+  </crn:parameter>
+  <!-- tm1Server: Defines a group of properties for the TM1 Server.  -->
+  <crn:parameter name="tm1Server" opaque="true" disabled="true">
+    <crn:value>
+      <crn:instances name="tm1ServerInstances" disabled="true">
+        <!-- SData: Defines a group of properties for a TM1 Server instance.  -->
+        <crn:instance name="SData" class="tm1ServerInstance" disabled="true">
+          <!-- tm1sConfigDirectory: Specifies the path to the TM1 configuration file.  -->
+          <!-- The TM1 Server configuration file is tm1s.cfg. It contains configuration settings
+               such as DataDirectory and ServerName. This path can be absolute or relative to the
+               IBM Cognos installation's bin directory or bin64 directory in 64-bit installations
+               (e.g. C:\Program Files\IBM\Cognos\TM1\bin).  -->
+          <crn:parameter name="tm1sConfigDirectory" disabled="true">
+            <crn:value xsi:type="cfg:folderPath">../samples/tm1/SData</crn:value>
+          </crn:parameter>
+        </crn:instance>
+        <!-- Planning Sample: Defines a group of properties for a TM1 Server instance.  -->
+        <crn:instance name="Planning Sample" class="tm1ServerInstance" disabled="true">
+          <!-- tm1sConfigDirectory: Specifies the path to the TM1 configuration file.  -->
+          <!-- The TM1 Server configuration file is tm1s.cfg. It contains configuration settings
+               such as DataDirectory and ServerName. This path can be absolute or relative to the
+               IBM Cognos installation's bin directory or bin64 directory in 64-bit installations
+               (e.g. C:\Program Files\IBM\Cognos\TM1\bin).  -->
+          <crn:parameter name="tm1sConfigDirectory" disabled="true">
+            <crn:value xsi:type="cfg:folderPath">../samples/tm1/PlanSamp</crn:value>
+          </crn:parameter>
+        </crn:instance>
+        <!-- GO_New_Stores: Defines a group of properties for a TM1 Server instance.  -->
+        <crn:instance name="GO_New_Stores" class="tm1ServerInstance" disabled="true">
+          <!-- tm1sConfigDirectory: Specifies the path to the TM1 configuration file.  -->
+          <!-- The TM1 Server configuration file is tm1s.cfg. It contains configuration settings
+               such as DataDirectory and ServerName. This path can be absolute or relative to the
+               IBM Cognos installation's bin directory or bin64 directory in 64-bit installations
+               (e.g. C:\Program Files\IBM\Cognos\TM1\bin).  -->
+          <crn:parameter name="tm1sConfigDirectory" disabled="true">
+            <crn:value xsi:type="cfg:folderPath">../samples/tm1/GO_New_Stores</crn:value>
+          </crn:parameter>
+        </crn:instance>
+        <!-- GO_Scorecards: Defines a group of properties for a TM1 Server instance.  -->
+        <crn:instance name="GO_Scorecards" class="tm1ServerInstance" disabled="true">
+          <!-- tm1sConfigDirectory: Specifies the path to the TM1 configuration file.  -->
+          <!-- The TM1 Server configuration file is tm1s.cfg. It contains configuration settings
+               such as DataDirectory and ServerName. This path can be absolute or relative to the
+               IBM Cognos installation's bin directory or bin64 directory in 64-bit installations
+               (e.g. C:\Program Files\IBM\Cognos\TM1\bin).  -->
+          <crn:parameter name="tm1sConfigDirectory" disabled="true">
+            <crn:value xsi:type="cfg:folderPath">../samples/tm1/GO_scorecards</crn:value>
+          </crn:parameter>
+        </crn:instance>
+        <!-- Proven_Techniques: Defines a group of properties for a TM1 Server instance.  -->
+        <crn:instance name="Proven_Techniques" class="tm1ServerInstance" disabled="true">
+          <!-- tm1sConfigDirectory: Specifies the path to the TM1 configuration file.  -->
+          <!-- The TM1 Server configuration file is tm1s.cfg. It contains configuration settings
+               such as DataDirectory and ServerName. This path can be absolute or relative to the
+               IBM Cognos installation's bin directory or bin64 directory in 64-bit installations
+               (e.g. C:\Program Files\IBM\Cognos\TM1\bin).  -->
+          <crn:parameter name="tm1sConfigDirectory" disabled="true">
+            <crn:value xsi:type="cfg:folderPath">../samples/tm1/Proven_Techniques</crn:value>
+          </crn:parameter>
+        </crn:instance>
+      </crn:instances>
+    </crn:value>
+  </crn:parameter>
+  <!-- mdmDB: Business Viewpoint Repository properties.  -->
+  <crn:parameter name="mdmDB" opaque="true" disabled="true">
+    <crn:value>
+      <!-- mdm_database: Specifies the database type for the Business Viewpoint repository.  -->
+      <!-- You cannot change the value of this property. It is automatically set when you choose
+           the database type for the repository in the Explorer window.  -->
+      <crn:instances name="mdm_database" disabled="true">
+        <!-- Database: Defines a group of properties used to locate an existing DB2 database.  -->
+        <!-- Ensure that the database already exists.  -->
+        <crn:instance name="Database" class="DB2" disabled="true">
+          <!-- server: Specifies the name or TCP/IP address of the database computer.  -->
+          <!-- When a value is specified, database connections are made directly to the database
+               (type 4). When the value is left blank, database connections are made through the
+               database client (type 2).  -->
+          <crn:parameter name="server" disabled="true">
+            <crn:value xsi:type="cfg:hostPort"></crn:value>
+          </crn:parameter>
+          <!-- user: Specifies the user ID and password that the product uses to connect to the
+               content store.  -->
+          <!-- This value identifies the database user who has unrestricted access to the database.
+               The product uses this account to access the content store. To secure the logon credentials,
+               you can encrypt the database logon information immediately by saving your configuration.  -->
+          <crn:parameter name="user" disabled="true">
+            <crn:value xsi:type="cfg:credential">
+              <credential>
+                <username/>
+                <password/>
+              </credential>
+            </crn:value>
+          </crn:parameter>
+          <!-- name: Specifies the name of the DB2 database.  -->
+          <!-- Enter the name of the database. The name is set when you create the database. Ensure
+               that the value for this property corresponds to the name of the database you created.
+               Otherwise, the product will not run.  -->
+          <crn:parameter name="name" disabled="true">
+            <crn:value xsi:type="xsd:string">bv</crn:value>
+          </crn:parameter>
+        </crn:instance>
+      </crn:instances>
+    </crn:value>
+  </crn:parameter>
+  <!-- mdmNotification: Defines a group of properties that provides access to a mail server
+       account.  -->
+  <!-- Use this group of properties to configure an account from which all notifications
+       are sent.  -->
+  <crn:parameter name="mdmNotification" opaque="true" disabled="true">
+    <crn:value>
+      <!-- smtpMailServer: Specifies the host name and port of the mail server computer.  -->
+      <!-- Use the following syntax to specify the location of the mail server: host:port. The
+           default SMTP port on most mail servers is 25.  -->
+      <crn:parameter name="smtpMailServer" disabled="true">
+        <crn:value xsi:type="cfg:hostPort">mailserver:25</crn:value>
+      </crn:parameter>
+      <!-- SmtpAccount: Specifies the user id and password to log on to the mail server.  -->
+      <!-- If the mail server requires authentication to send messages, enter a valid user id
+           and password. If the mail server does not require authentication, leave these values
+           empty.  -->
+      <crn:parameter name="SmtpAccount" disabled="true">
+        <crn:value xsi:type="cfg:credential">
+          <credential>
+            <username/>
+            <password/>
+          </credential>
+        </crn:value>
+      </crn:parameter>
+      <!-- DefaultSender: Specifies the email address of the sender.  -->
+      <!-- This setting specifies the email address of the 'sender' of outgoing messages. Use
+           a valid email address.  -->
+      <crn:parameter name="DefaultSender" disabled="true">
+        <crn:value xsi:type="xsd:string">user@mail</crn:value>
+      </crn:parameter>
+      <!-- defaultReplyTo: Specifies the email address for Reply-To.  -->
+      <!-- This setting specifies the email address of the 'Reply-To' of outgoing messages.
+           Use a valid email address.  -->
+      <crn:parameter name="defaultReplyTo" disabled="true">
+        <crn:value xsi:type="xsd:string">user@mail</crn:value>
+      </crn:parameter>
+    </crn:value>
+  </crn:parameter>
+  <!-- CM: Defines a component that manages content and security policies.  -->
+  <!-- Content Manager must be able to connect to an external database that stores content.  -->
+  <crn:parameter name="CM" opaque="true">
+    <crn:value>
+      <!-- outputCMReportToFile: Specifies whether to save report outputs to a file system through
+           the Content Manager Advanced Setting (i.e. CM.OUTPUTLOCATION).  -->
+      <!-- Use this flag to enable/disable the feature to save report outputs to a file system
+           by Content Manager Service. Please note that this feature is completely different
+           than the new report run option to archive a report output to a file system by Delivery
+           Service. Report output formats that you can save include: PDF, CSV, XML, Excel 2002,
+           and HTML which do not have embedded graphics. Report outputs that you cannot save
+           include: HTML fragment, XHTML, or Excel 2000 single sheet formats.  -->
+      <crn:parameter name="outputCMReportToFile">
+        <crn:value xsi:type="xsd:boolean">false</crn:value>
+      </crn:parameter>
+      <!-- advancedProperties: Specifies a set of advanced properties.  -->
+      <!-- The user needs to provide the name and the value for each advanced property.  -->
+      <crn:parameter name="advancedProperties" opaque="true">
+        <crn:value xsi:type="cfg:array"/>
+      </crn:parameter>
+      <!-- database: Specifies the database type for the content store.  -->
+      <!-- You cannot change the value of this property. It is automatically set when you choose
+           the database type for the content store in the Explorer window.  -->
+      <crn:instances name="database">
+        <!-- Content Store: Defines a group of properties used to locate an existing DB2 database.  -->
+        <!-- Ensure that the database already exists.  -->
+        <crn:instance name="Content Store" class="DB2">
+          <!-- server: Specifies the name or TCP/IP address of the database computer.  -->
+          <!-- When a value is specified, database connections are made directly to the database
+               (type 4). When the value is left blank, database connections are made through the
+               database client (type 2).  -->
+          <crn:parameter name="server">
+            <crn:value xsi:type="cfg:hostPort">localhost:50000</crn:value>
+          </crn:parameter>
+          <!-- user: Specifies the user ID and password that the product uses to connect to the
+               content store.  -->
+          <!-- This value identifies the database user who has unrestricted access to the database.
+               The product uses this account to access the content store. To secure the logon credentials,
+               you can encrypt the database logon information immediately by saving your configuration.  -->
+          <crn:parameter name="user">
+            <crn:value xsi:type="cfg:credential" encrypted="false">
+              <credential>
+                <username><%= scope['cognos::cognos_db_user'] %></username>
+                <password><%= scope['cognos::cognos_db_user_password'] %></password>
+              </credential>
+            </crn:value>
+          </crn:parameter>
+          <!-- name: Specifies the name of the DB2 database.  -->
+          <!-- Enter the name of the database.  -->
+          <crn:parameter name="name">
+            <crn:value xsi:type="xsd:string">cm</crn:value>
+          </crn:parameter>
+          <!-- SSLencryptionEnabled: Specifies whether database connection should use SSL encryption.  -->
+          <!-- Use this property to enable SSL encryption of the database connection.  -->
+          <crn:parameter name="SSLencryptionEnabled">
+            <crn:value xsi:type="xsd:boolean">false</crn:value>
+          </crn:parameter>
+        </crn:instance>
+      </crn:instances>
+    </crn:value>
+  </crn:parameter>
+  <!-- MOB: Defines a group of properties used to connect to the mobile database.  -->
+  <!-- Use these properties to specify the type of database for Mobile and the connection
+       information required to access it. Mobile supports DB2, SQL Server and Oracle. To
+       do this, right-click Mobile, click New resource, Database, select the database type
+       and then configure the resource properties.  -->
+  <crn:parameter name="MOB" opaque="true">
+    <crn:value/>
+  </crn:parameter>
+  <!-- NC: Defines a group of properties that provides access to a mail server account or
+       to IBM Cognos content.  -->
+  <!-- Use this group of properties to configure an account from which all notifications
+       are sent. The Notification component also requires access to a database that will
+       be used to store Notification content. This means that in a distributed installation
+       all Notification components must point to the same database. To do this, right-click
+       Notification, click New, Database and then type a name and select the database type.
+       If the Notification component is on the same computer as Content Manager, you are
+       not required to configure a database resource for the Notification component.  -->
+  <crn:parameter name="NC" opaque="true">
+    <crn:value>
+      <!-- smtpMailServer: Specifies the host name and port of the mail server computer.  -->
+      <!-- Use the following syntax to specify the location of the mail server: host:port. The
+           default SMTP port on most mail servers is 25.  -->
+      <crn:parameter name="smtpMailServer">
+        <crn:value xsi:type="cfg:hostPort">mailserver:25</crn:value>
+      </crn:parameter>
+      <!-- smtpAccount: Specifies the user id and password to log on to the mail server.  -->
+      <!-- If the mail server requires authentication to send messages, enter a valid user id
+           and password. If the mail server does not require authentication, leave these values
+           empty.  -->
+      <crn:parameter name="smtpAccount">
+        <crn:value xsi:type="cfg:credential">
+          <credential>
+            <username>nc_user</username>
+            <password>nc_password</password>
+          </credential>
+        </crn:value>
+      </crn:parameter>
+      <!-- defaultSender: Specifies the email address of the sender.  -->
+      <!-- This setting specifies the email address of the 'sender' of outgoing messages. Use
+           a valid email address.  -->
+      <crn:parameter name="defaultSender">
+        <crn:value xsi:type="xsd:string">notifications@cognos.ibm.com</crn:value>
+      </crn:parameter>
+      <!-- SSLencryptionEnabled: Specifies whether mail server connection should use SSL encryption.  -->
+      <!-- Use this property to enable SSL encryption for mail server connection.  -->
+      <crn:parameter name="SSLencryptionEnabled">
+        <crn:value xsi:type="xsd:boolean">false</crn:value>
+      </crn:parameter>
+    </crn:value>
+  </crn:parameter>
+  <!-- HTS: Defines a group of properties that provides access to Human Task and Annotation
+       Services content.  -->
+  <!-- Use this group of properties to configure the access to the database that will be
+       used to store Human Task and Annotation Services content.  -->
+  <crn:parameter name="HTS" opaque="true">
+    <crn:value/>
+  </crn:parameter>
+  <!-- PLACDS: Defines a group of properties that provide access to IBM Cognos Planning
+       content.  -->
+  <!-- Use this group of properties to configure the access to Planning Contributor Data
+       Server and Planning content store. A database resource component that points to the
+       Planning Store is required when the planning server is installed. If the planning
+       server component is installed on the same computer as Content Manager, the database
+       resource can point to the same database that's used for Content Manager.  -->
+  <crn:parameter name="PLACDS" opaque="true">
+    <crn:value>
+      <!-- ContributorDataServer: Defines the properties for the Planning Contributor Data Server.  -->
+      <crn:parameter name="ContributorDataServer" opaque="true">
+        <crn:value>
+          <!-- PLACDS_sharedSecret: Specifies the password that enables secure communication between
+               IBM Cognos servers and Contributor Data Server for scheduled reports and agents.  -->
+          <!-- The password is case-sensitive and must match the Signature password property that
+               you configure in IBM Cognos Series 7, Configuration Manager, IBM Cognos Planning
+               / IBM Cognos - Contributor Data Server / General properties.  -->
+          <crn:parameter name="PLACDS_sharedSecret">
+            <crn:value xsi:type="cfg:systemPassword">NoPassWordSet</crn:value>
+          </crn:parameter>
+        </crn:value>
+      </crn:parameter>
+      <!-- pla_database: Specifies the database type for the content store.  -->
+      <!-- You cannot change the value of this property. It is automatically set when you choose
+           the database type for the content store in the Explorer window.  -->
+      <crn:instances name="pla_database" disabled="true">
+        <!-- Planning Store: Defines a group of properties used to locate an existing DB2 database.  -->
+        <!-- Ensure that the database already exists.  -->
+        <crn:instance name="Planning Store" class="DB2" disabled="true">
+          <!-- server: Specifies the name or TCP/IP address of the database computer.  -->
+          <!-- When a value is specified, database connections are made directly to the database
+               (type 4). When the value is left blank, database connections are made through the
+               database client (type 2).  -->
+          <crn:parameter name="server">
+            <crn:value xsi:type="cfg:hostPort"></crn:value>
+          </crn:parameter>
+          <!-- user: Specifies the user ID and password that the product uses to connect to the
+               Planning database.  -->
+          <!-- This value identifies the database user who has unrestricted access to the database.
+               The product uses this account to access the content store. To secure the logon credentials,
+               you can encrypt the database logon information immediately by saving your configuration.  -->
+          <crn:parameter name="user">
+            <crn:value xsi:type="cfg:credential">
+              <credential>
+                <username/>
+                <password/>
+              </credential>
+            </crn:value>
+          </crn:parameter>
+          <!-- name: Specifies the name of the database used as the content store.  -->
+          <!-- Enter the name of the database. The name is set when you create the database. Ensure
+               that the value for this property corresponds to the name of the database you created.
+               Otherwise, the product will not run.  -->
+          <crn:parameter name="name">
+            <crn:value xsi:type="xsd:string">ps</crn:value>
+          </crn:parameter>
+          <!-- SSLencryptionEnabled: Specifies whether database connection should use SSL encryption.  -->
+          <!-- Use this property to enable SSL encryption of the database connection.  -->
+          <crn:parameter name="SSLencryptionEnabled">
+            <crn:value xsi:type="xsd:boolean">false</crn:value>
+          </crn:parameter>
+        </crn:instance>
+      </crn:instances>
+    </crn:value>
+  </crn:parameter>
+</crn:parameters>

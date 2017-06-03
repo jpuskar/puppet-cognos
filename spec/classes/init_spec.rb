@@ -24,7 +24,15 @@ describe 'cognos' do
       it { is_expected.to contain_file('/opt/ibm/cognos/analytics/drivers/db2jcc.jar') }
       it { is_expected.to contain_file('/vagrant/cognos_11_installer.properties') }
       it { is_expected.to contain_file('/etc/systemd/system/cognos.service') }
-      it { is_expected.to contain_file('/opt/ibm/cognos/analytics/configuration/cogstartup.puppet.xml') }
+      it { is_expected.to contain_concat__fragment('cogconfig_base_pre').with(
+        { :target => '/opt/ibm/cognos/analytics/configuration/cogstartup.puppet.xml' }
+      )}
+      it { is_expected.to contain_concat__fragment('cogconfig_base_post').with(
+        { :target => '/opt/ibm/cognos/analytics/configuration/cogstartup.puppet.xml' }
+      )}
+      it { is_expected.to contain_concat__fragment('auth_provider_cognos_1').with(
+        { :target => '/opt/ibm/cognos/analytics/configuration/cogstartup.puppet.xml' }
+      )}
       it { is_expected.to contain_file('/etc/cognos') }
       it { is_expected.to contain_file('/var/log/cognos') }
       it { is_expected.to contain_file('/var/log/cognos/common') }

@@ -24,6 +24,7 @@ echo I am provisioning...
 export FACTER_is_vagrant='true'
 [ -d /tmp/modules/cognos ] || mkdir -p /tmp/modules/cognos
 mount | grep /tmp/modules/cognos || mount --bind /vagrant /tmp/modules/cognos
+puppet module install puppetlabs-concat
 puppet module install puppetlabs-stdlib
 puppet module install crayfishx-firewalld
 puppet module install puppet-selinux

@@ -56,30 +56,35 @@ class cognos::config{
       port     => 9300,
       protocol => 'tcp',
     }
-
-    # firewall { '1205 [cognos::config] allow cognos gateway https inbound':
-    #   chain  => 'INPUT',
-    #   proto  => 'tcp',
-    #   dport  => 443,
-    #   state  => 'NEW',
-    #   action => 'accept',
-    # }
-    #
-    # firewall { '3505 [cognos::config] allow cognos gateway https outbound':
-    #   chain  => 'OUTPUT',
-    #   proto  => 'tcp',
-    #   dport  => 443,
-    #   state  => 'NEW',
-    #   action => 'accept',
-    # }
   }
 
-  # Cognos config file
-  file{"${cognos::installer_target_dir}/configuration/cogstartup.puppet.xml":
-    content => template('cognos/cognos11_config.xml.erb'),
-    mode    => '0755',
-    before  => Exec['apply_new_cognos_config'],
-    notify  => Exec['apply_new_cognos_config'],
+  # Auth Providers
+  if !empty($cognos::auth_provider_config) {
+    $cognos::auth_provider_config.each | $instance_config | {
+      ensure_resources(
+        'cognos::config::auth_provider',
+        $instance_config
+      )
+    }
+  }
+
+  concat { "${cognos::installer_target_dir}/configuration/cogstartup.puppet.xml":
+    owner  => $cognos::cognos_user,
+    group  => $cognos::cognos_user,
+    mode   => '0644',
+    notify => Exec['apply_new_cognos_config'],
+  }
+
+  concat::fragment {'cogconfig_base_pre':
+    content => template('cognos/config/cogconfig_fragment_05.xml.erb'),
+    target  => "${cognos::installer_target_dir}/configuration/cogstartup.puppet.xml",
+    order   => '05',
+  }
+
+  concat::fragment {'cogconfig_base_post':
+    content => template('cognos/config/cogconfig_fragment_20.xml.erb'),
+    target  => "${cognos::installer_target_dir}/configuration/cogstartup.puppet.xml",
+    order   => '20',
   }
 
   # Configure Cognos
@@ -96,6 +101,7 @@ chown ${cognos::cognos_user}:${cognos::cognos_user} \
     provider    => 'shell',
     refreshonly => true,
     notify      => Service['cognos'],
+    require     => Concat["${cognos::installer_target_dir}/configuration/cogstartup.puppet.xml"],
   }
 
   # Add symlinks for intuitive log and config locations
@@ -121,4 +127,5 @@ chown ${cognos::cognos_user}:${cognos::cognos_user} \
     }
   }
 
+  Cognos::Config::Auth_provider<| |> -> Exec<| title == 'apply_new_cognos_config' |>
 }

@@ -1,0 +1,284 @@
+        <crn:instance name="<%= @instance_name %>" class="LDAP">
+          <!-- id: Specifies a unique identifier for the authentication namespace.  -->
+          <!-- Use the namespace identifier to distinguish between multiple namespaces. Each namespace
+               must have a unique identifier. When you select a namespace to use for authentication
+               in the run-time environment, the identifier is used by the IBM Cognos components.
+               Changing the namespace ID after the service has been started may invalidate the object
+               security policies and the Cognos group and role memberships. The use of the colon
+               in the Namespace ID is not supported.  -->
+          <crn:parameter name="id">
+            <crn:value xsi:type="xsd:string"><%= @final_instance_id %></crn:value>
+          </crn:parameter>
+          <!-- connection: Specifies the host name and port of the directory server.  -->
+          <!-- Use the following syntax to specify the host name and port for the directory server:
+               host:port; for example, localhost:389. Ensure that if you use a fully qualified name
+               for your computer that your DNS is set up to resolve it. Otherwise, you can also
+               use the IP address.  -->
+          <crn:parameter name="connection">
+            <crn:value xsi:type="cfg:hostPort"><%= @host_port %></crn:value>
+          </crn:parameter>
+          <!-- baseDN: Specifies the base distinguished name of the LDAP server.  -->
+          <!-- The product uses the base DN to identify the top level of your directory server structure.
+               The root of the hierarchal directory structure is the starting place for all searches.
+               You restrict searches by specifying a base DN.  -->
+          <crn:parameter name="baseDN">
+            <crn:value xsi:type="xsd:string"><%= @base_dn %></crn:value>
+          </crn:parameter>
+          <!-- userLookup: Specifies the user lookup used for binding to the LDAP directory server.  -->
+          <!-- Use this property to specify the string that is used to construct the fully qualified
+               DN for authentication. All instances of '${userID}' in this string are replaced by
+               the value typed in by the user at the logon prompt. If the string does not begin
+               with an open parenthesis, the result of the substitution is assumed to be a DN which
+               can be used for authentication. For example, 'uid=${userID},ou=people, base DN',
+               where base DN is the Base Distinguished Name parameter value. If the value begins
+               with an open parenthesis '(', the result of the substitution is assumed to be a search
+               filter. Before binding, the provider uses the filter to get the DN for authentication.
+               For example, '(userPrincipalName=${userID})'. A filter should be used if you have
+               a hierarchical directory structure.  -->
+          <crn:parameter name="userLookup">
+            <crn:value xsi:type="xsd:string"><%= @user_lookup %></crn:value>
+          </crn:parameter>
+          <!-- useExternalIdentity: Specifies whether to use the identity from an external source
+               for user authentication.  -->
+          <!-- If this property is set to true, the user is authenticated by an external source
+               and the user's identity is provided to the product from the external source. For
+               example, if SSL is configured to use client certificates, the Web server sets the
+               REMOTE_USER environment variable to the user's identity. If you set this property
+               to true, ensure that you set the "External Identity Mapping" property.  -->
+          <crn:parameter name="useExternalIdentity">
+            <crn:value xsi:type="xsd:boolean"><%= @use_external_identity %></crn:value>
+          </crn:parameter>
+          <!-- externalIdentityMapping: Specifies the mapping used to locate a user in the LDAP
+               directory server.  -->
+          <!-- This property is used only if you enable the "Use External identity" property. This
+               mapping is used to construct a DN or a search filter to locate a user in the LDAP
+               directory server. All instances of '${environment("ENVIRONMENT_VARIABLE_NAME")' in
+               this string are replaced by the value of the environment variable provided by the
+               Web server. If the string does not begin with an open parenthesis, the result of
+               the substitution is assumed to be the user's DN. For example, 'uid=${environment("REMOTE_USER")},ou=people,
+               base DN', where base DN is the Base Distinguished Name parameter value. If the value
+               begins with an open parenthesis '(', the result of the substitution is assumed to
+               be a search filter. For example, '(userPrincipalName=${environment("REMOTE_USER")})'.
+               Note that you must either enable anonymous access to the LDAP directory server or
+               set the 'Bind user DN and password' property.  -->
+          <crn:parameter name="externalIdentityMapping">
+            <crn:value xsi:type="xsd:string"><%= @external_identity_mapping %></crn:value>
+          </crn:parameter>
+          <!-- bindCredentials: Specifies the credentials used for binding to the LDAP server when
+               performing a search using the user lookup property, or when performing all operations
+               using the external identity mapping.  -->
+          <!-- This value corresponds to an LDAP user who has read and search access to the user
+               branch of the LDAP directory server.  -->
+          <crn:parameter name="bindCredentials">
+            <crn:value xsi:type="cfg:credential">
+              <credential>
+                <username><%= @bind_username %></username>
+                <password><%= @bind_password %></password>
+              </credential>
+            </crn:value>
+          </crn:parameter>
+          <!-- sizeLimit: Specifies the maximum number of responses permitted for a search request.  -->
+          <!-- The value depends on your environment. As a general rule, the minimum value for this
+               setting should be greater than the maximum number of groups or users plus 100. When
+               the size limit is reached the directory server stops searching. The default value
+               of -1 indicates that the value on the LDAP server will be used.  -->
+          <crn:parameter name="sizeLimit">
+            <crn:value xsi:type="xsd:int"><%= @size_limit %></crn:value>
+          </crn:parameter>
+          <!-- timeOut: Specifies the number of seconds permitted to perform a search request.  -->
+          <!-- The product uses this value when it requests authentication from the namespace on
+               your directory server. The value depends on your reporting environment. If the duration
+               is exceeded, the search is timed out. The default value -1 indicates that the value
+               on the LDAP server will be used.  -->
+          <crn:parameter name="timeOut">
+            <crn:value xsi:type="xsd:int"><%= @time_out %></crn:value>
+          </crn:parameter>
+          <!-- useBindCredentialsForSearch: Specifies whether to use the bind credentials to perform
+               a search.  -->
+          <!-- This property only affects users who don't use the external identity mapping. If
+               this property is set to true, the bind credentials provided in the namespace configuration
+               will be used to perform a search in the LDAP directory server. If this flag is false
+               or bind credentials are not presented, the authenticated user credentials will be
+               used for searching.  -->
+          <crn:parameter name="useBindCredentialsForSearch">
+            <crn:value xsi:type="xsd:boolean"><%= @use_bind_credentials_for_search %></crn:value>
+          </crn:parameter>
+          <!-- allowEmptyPswd: Specifies whether empty passwords are allowed for user authentication.  -->
+          <!-- Set this property to true only if you specifically wish to allow empty passwords.
+               When a user is not required to specify a password, he is authenticated as an anonymous
+               user on the LDAP namespace, but as a named user on the Cognos namespace. Requiring
+               passwords for authentication increases security and makes it more difficult to forge
+               identities. By default, this property is set to false.  -->
+          <crn:parameter name="allowEmptyPswd">
+            <crn:value xsi:type="xsd:boolean"><%= @allow_empty_password %></crn:value>
+          </crn:parameter>
+          <!-- camidAttribute: Specifies the value used to uniquely identify objects stored in the
+               LDAP directory server.  -->
+          <!-- Specify either an attribute name or the value of 'dn' to use as the unique identifier.
+               If an attribute is used, it must exist for all objects, such as users, groups, folders.
+               If the 'dn' is used, more resources are used as you search deeper in the LDAP directory
+               server hierarchy and policies may be affected if the 'dn' is renamed.  -->
+          <crn:parameter name="camidAttribute">
+            <crn:value xsi:type="xsd:string"><%= @cam_id_attribute %></crn:value>
+          </crn:parameter>
+          <!-- dataEncoding: Specifies the encoding of the data stored in the LDAP directory server.  -->
+          <!-- If this property is set to an encoding other than UTF-8, then the data is converted
+               from UTF-8 to the encoding you specify. The encoding must follow IANA (RFC 1700)
+               or MIME character set specifications. For example, use windows-1252, iso-8859-1,
+               iso-8859-15, Shift_JIS, utf-16, or utf-8.  -->
+          <crn:parameter name="dataEncoding">
+            <crn:value xsi:type="xsd:string"><%= @data_encoding %></crn:value>
+          </crn:parameter>
+          <!-- sslCertificateDatabase: Specifies the location of the certificate database used by
+               the directory server for SSL connections.  -->
+          <!-- Use this property to point to the location of the SSL certificate database for your
+               LDAP server.  -->
+          <crn:parameter name="sslCertificateDatabase">
+            <crn:value xsi:type="cfg:filePath"><%= @final_ssl_certificate_database %></crn:value>
+          </crn:parameter>
+          <!-- advancedProperties: Specifies a set of advanced properties.  -->
+          <!-- The user needs to provide the name and the value for each advanced property.  -->
+          <crn:parameter name="advancedProperties" opaque="true">
+            <crn:value xsi:type="cfg:array"/>
+          </crn:parameter>
+          <!-- tenantIdMapping: Specifies how namespace users are mapped to tenant IDs.  -->
+          <!-- Specifying a value for this parameter enables multitenancy. The tenant ID for a user
+               can be determined using a pattern or a tenant provider class. The pattern is a AAA
+               service search path to a property which defines a tenant ID. The search path must
+               be relative to a user account. For example: '~/ancestors[2]/defaultName'. A tenant
+               provider class is Java class which implements the the ITenantProvider interface.
+               For more details please consult the installation and configuration guide.  -->
+          <crn:parameter name="tenantIdMapping" opaque="true">
+            <crn:value xsi:type="cfg:tenancyInfo">
+              <crn:item name="pattern" xsi:type="xsd:string"><%= @tenancy_info %></crn:item>
+            </crn:value>
+          </crn:parameter>
+          <!-- tenantBoundingSetMapping: Specifies how the tenant bounding set is determined for
+               a user.  -->
+          <!-- This parameter is used when multitenancy is enabled. The tenant bounding set for
+               a user can be determined using a pattern or a tenant bounding set provider class.
+               The pattern i/etc/pki/ca-trust/source/anchors/pd-ipa01.ipa.explorys.net.cer's a AAA service search path to a property which defines a tenant bounding
+               set. The search path must be relative to a user account. For example: '˜/parameters/boundingSet'.
+               A tenant bounding set provider class is Java class which implements the the IBoundingSetProvider
+               interface. For more details please consult the installation and configuration guide.  -->
+          <crn:parameter name="tenantBoundingSetMapping" opaque="true">
+            <crn:value xsi:type="cfg:tenancyInfo">
+              <crn:item name="pattern" xsi:type="xsd:string"><%= @tenant_bounding_set_mapping %></crn:item>
+            </crn:value>
+          </crn:parameter>
+          <!-- folderObjectClass: Specifies the name of the LDAP object class used to identify a
+               folder.  -->
+          <crn:parameter name="folderObjectClass">
+            <crn:value xsi:type="xsd:string"><%= @folder_object_class %></crn:value>
+          </crn:parameter>
+          <!-- folderDescription: Specifies the LDAP attribute used for the "description" property
+               of a folder.  -->
+          <crn:parameter name="folderDescription">
+            <crn:value xsi:type="xsd:string"><%= @folder_description %></crn:value>
+          </crn:parameter>
+          <!-- folderName: Specifies the LDAP attribute used for the "name" property of a folder.  -->
+          <crn:parameter name="folderName">
+            <crn:value xsi:type="xsd:string"><%= @folder_name %></crn:value>
+          </crn:parameter>
+          <!-- groupObjectClass: Specifies the name of the LDAP object class used to identify a
+               group.  -->
+          <crn:parameter name="groupObjectClass">
+            <crn:value xsi:type="xsd:string"><%= @group_object_class %></crn:value>
+          </crn:parameter>
+          <!-- groupDescription: Specifies the LDAP attribute used for the "description" property
+               of a group.  -->
+          <crn:parameter name="groupDescription">
+            <crn:value xsi:type="xsd:string"><%= @group_description %></crn:value>
+          </crn:parameter>
+          <!-- groupMembers: Specifies the LDAP attribute used to identify the members of a group.  -->
+          <crn:parameter name="groupMembers">
+            <crn:value xsi:type="xsd:string"><%= @group_members %></crn:value>
+          </crn:parameter>
+          <!-- groupName: Specifies the LDAP attribute used for the "name" property of a group.  -->
+          <crn:parameter name="groupName">
+            <crn:value xsi:type="xsd:string"><%= @group_name %></crn:value>
+          </crn:parameter>
+          <!-- accountObjectClass: Specifies the name of the LDAP object class used to identify
+               an account.  -->
+          <crn:parameter name="accountObjectClass">
+            <crn:value xsi:type="xsd:string"><%= @account_object_class %></crn:value>
+          </crn:parameter>
+          <!-- accountBusinessPhone: Specifies the LDAP attribute used for the "businessPhone" property
+               for an account.  -->
+          <crn:parameter name="accountBusinessPhone">
+            <crn:value xsi:type="xsd:string"><%= @account_business_phone %></crn:value>
+          </crn:parameter>
+          <!-- accountContentLocale: Specifies the LDAP attribute used for the "contentLocale" property
+               for an account.  -->
+          <crn:parameter name="accountContentLocale">
+            <crn:value xsi:type="xsd:string"><%= @account_content_locale %></crn:value>
+          </crn:parameter>
+          <!-- accountDescription: Specifies the LDAP attribute used for the "description" property
+               for an account.  -->
+          <crn:parameter name="accountDescription">
+            <crn:value xsi:type="xsd:string"><%= @account_description %></crn:value>
+          </crn:parameter>
+          <!-- accountEmail: Specifies the LDAP attribute used for the "email" address of the account.  -->
+          <crn:parameter name="accountEmail">
+            <crn:value xsi:type="xsd:string"><%= @account_email %></crn:value>
+          </crn:parameter>
+          <!-- accountFaxPhone: Specifies the LDAP attribute used for the "faxPhone" property for
+               an account.  -->
+          <crn:parameter name="accountFaxPhone">
+            <crn:value xsi:type="xsd:string"><%= @account_fax_phone %></crn:value>
+          </crn:parameter>
+          <!-- accountGivenName: Specifies the LDAP attribute used for the "givenName" property
+               for an account.  -->
+          <crn:parameter name="accountGivenName">
+            <crn:value xsi:type="xsd:string"><%= @account_given_name %></crn:value>
+          </crn:parameter>
+          <!-- accountHomePhone: Specifies the LDAP attribute used for the "homePhone" property
+               for an account.  -->
+          <crn:parameter name="accountHomePhone">
+            <crn:value xsi:type="xsd:string"><%= @account_home_phone %></crn:value>
+          </crn:parameter>
+          <!-- accountMobilePhone: Specifies the LDAP attribute used for the "mobilePhone" property
+               for an account.  -->
+          <crn:parameter name="accountMobilePhone">
+            <crn:value xsi:type="xsd:string"><%= @account_mobile_phone %></crn:value>
+          </crn:parameter>
+          <!-- accountName: Specifies the LDAP attribute used for the "name" property for an account.  -->
+          <crn:parameter name="accountName">
+            <crn:value xsi:type="xsd:string"><%= @account_name %></crn:value>
+          </crn:parameter>
+          <!-- accountPagerPhone: Specifies the LDAP attribute used for the "pagerPhone" property
+               for an account.  -->
+          <crn:parameter name="accountPagerPhone">
+            <crn:value xsi:type="xsd:string"><%= @account_pager_phone %></crn:value>
+          </crn:parameter>
+          <!-- accountPassword: Specifies the LDAP attribute used for the "password" property for
+               an account.  -->
+          <crn:parameter name="accountPassword">
+            <crn:value xsi:type="xsd:string"><%= @account_password %></crn:value>
+          </crn:parameter>
+          <!-- accountPostalAddress: Specifies the LDAP attribute used for the "postalAddress" property
+               for an account.  -->
+          <crn:parameter name="accountPostalAddress">
+            <crn:value xsi:type="xsd:string"><%= @account_postal_address %></crn:value>
+          </crn:parameter>
+          <!-- accountProductLocale: Specifies the LDAP attribute used for the "productLocale" property
+               for an account.  -->
+          <crn:parameter name="accountProductLocale">
+            <crn:value xsi:type="xsd:string"><%= @account_product_locale %></crn:value>
+          </crn:parameter>
+          <!-- accountSurname: Specifies the LDAP attribute used for the "surname" property for
+               an account.  -->
+          <crn:parameter name="accountSurname">
+            <crn:value xsi:type="xsd:string"><%= @account_surname %></crn:value>
+          </crn:parameter>
+          <!-- accountUserName: Specifies the LDAP attribute used for the "userName" property for
+               an account.  -->
+          <crn:parameter name="accountUserName">
+            <crn:value xsi:type="xsd:string"><%= @account_user_name %></crn:value>
+          </crn:parameter>
+          <!-- customProperties: Specifies a set of custom properties.  -->
+          <!-- Use this set of custom properties to define additional account information.  -->
+          <crn:parameter name="customProperties" opaque="true">
+            <crn:value xsi:type="cfg:array"/>
+          </crn:parameter>
+        </crn:instance>

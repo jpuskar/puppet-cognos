@@ -4,3 +4,5 @@
 vagrant/
 custom
 cognos_11_installer.properties
+spec/fixtures
+pkg/
