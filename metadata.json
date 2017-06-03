@@ -1,0 +1,16 @@
+{
+  "name": "puppet-cognos",
+  "version": "0.1.0",
+  "author": "jpuskar",
+  "summary": "Installs and configures Cognos.",
+  "license": "Apache-2.0",
+  "source": "https://github.com/jpuskar/puppet-cognos",
+  "project_page": "https://github.com/jpuskar/puppet-cognos",
+  "issues_url": "https://github.com/jpuskar/puppet-cognos/issues",
+  "dependencies": [
+    {"name":"puppetlabs-stdlib","version_requirement":">= 4.13.0"},
+    {"name":"crayfishx-firewalld","version_requirement":">=3.3.1"},
+    {"name":"puppet-selinux","version_requirement":">= 0.8.0"}
+  ],
+  "data_provider": null
+}

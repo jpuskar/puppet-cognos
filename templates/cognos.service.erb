@@ -1,0 +1,25 @@
+[Unit]
+Description=Cognos Analytics
+# TODO: if using db2: After=db2inst1.service
+# TODO: if using nginx: After=nginx.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+User=<%= scope['cognos::cognos_user'] %>
+LimitNOFILE=65536
+CPUAccounting=1
+MemoryAccounting=1
+BlockIOAccounting=1
+#Slice=workload-application.slice
+Environment=LD_LIBRARY_PATH=<%= scope['cognos::installer_target_dir'] %>/cgi-bin
+# TODO: if using db2, append to LD_LIBRARY_PATH: :<%= scope['cognos::db2_instance_dir'] %>/sqllib/lib32/
+Environment=JAVA_HOME=<%= scope['cognos::installer_target_dir'] %>/jre
+ExecStart=<%= scope['cognos::installer_target_dir'] %>/bin64/cogconfig.sh -s -d
+ExecStop=<%= scope['cognos::installer_target_dir'] %>/bin64/cogconfig.sh -stop
+RestartSec=900
+#Restart=always
+
+[Install]
+WantedBy=multi-user.target
+
