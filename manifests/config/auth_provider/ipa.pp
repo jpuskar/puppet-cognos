@@ -43,15 +43,6 @@ define cognos::config::auth_provider::ipa(
   $user_lookup                     = '(uid=${userID})',
 ) {
 
-  # TODO: Array param for 'advancedProperties'
-  # TODO: Array param for 'customProperties'
-
-  # if $use_external_identity {
-  #   $str_use_external_identity = 'true'
-  # } else {
-  #   $str_use_external_identity = 'false'
-  # }
-
   if $ssl_certificate_database {
     $final_ssl_certificate_database = $ssl_certificate_database
   } else {

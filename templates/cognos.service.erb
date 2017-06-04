@@ -19,6 +19,7 @@ CPUAccounting=1
 MemoryAccounting=1
 BlockIOAccounting=1
 <% end -%>
+LimitNOFILE=<%= scope['cognos::systemd_service_nofile_limit'] %>
 
 [Install]
 WantedBy=multi-user.target

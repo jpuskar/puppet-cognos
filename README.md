@@ -31,6 +31,110 @@ class {'cognos':
   installer_filename      => 'ca_srv_lnxi38664_11.0.5.16111917.bin',
 }
 ```
+
+### TLS / SSL
+
+#### For IPA Authentication
+The Cognos certificate database can be managed with this module.
+ 1. Stage the LDAP server's LDAPS public certificate on the target node.
+ 1. Use the following pattern for the `ldaps_public_certs_to_trust` parameter.
+ 
+```puppet
+$cert_db_path = '/opt/ibm/cognos/analytics/configuration'
+$ldaps_public_certs_to_trust = [
+  {
+    'ipa_root_cert' => {
+      source_file  => '/etc/pki/ca-trust/source/anchors/ipa_root_cert_pub.pem',
+      cert_db_path => $cert_db_path,
+    }
+  },
+  {
+    'ipa_dc1_cert' => {
+      source_file  => '/etc/pki/ca-trust/source/anchors/ipa_dc1_cert_pub.pem',
+      cert_db_path => $cert_db_path,
+    }
+  }
+]
+
+class {'cognos':
+  cognos_user_password        => 'mypass',
+  cognos_db_user_password     => 'mypass',
+  cog_users_password_salt     => 'random phrase',
+  installer_source_dir        => '/root',
+  installer_filename          => 'ca_srv_lnxi38664_11.0.5.16111917.bin',
+  ldaps_public_certs_to_trust => $ldaps_public_certs_to_trust,
+}
+
+```
+ 
+
+#### For Web
+I recommend using nginx in front of Cognos for TLS/SSL. However, it's important to note that if you want to use Webdav with Cognos using Nginx, on Centos this will require re-compiling nginx with webdav support.
+
+Example manifest:
+
+```puppet
+include '::selinux'
+
+file {'/etc/pki/tls/certs/mycert.net.crt':
+  ensure  => 'present',
+  content => 'contents_of_cert_file',
+}
+
+file {'/etc/pki/tls/certs/mycert.net.key':
+  ensure  => 'present',
+  content => 'contents_of_cert_file',
+}
+
+class {'::nginx': }
+~> class {'cognos':
+  cognos_user_password            => 'mypass',
+  cognos_db_user_password         => 'mypass',
+  cog_users_password_salt         => 'random phrase',
+  installer_source_dir            => '/root',
+  installer_filename              => 'ca_srv_lnxi38664_11.0.5.16111917.bin',
+  firewall_firewall_ports_to_open => [80, 443],
+  gateway                         => "https://${::fqdn}:443/bi/v1/disp",
+}
+
+selinux::boolean {'httpd_can_network_connect':
+  ensure => 'on',
+}
+
+selinux::boolean {'httpd_setrlimit':
+  ensure => 'on',
+}
+
+```
+
+With the following hiera:
+```yaml
+nginx::nginx_vhosts:
+  'cognos':
+    server_name:
+      - "%{::fqdn}"
+    ssl:                  true
+    listen_ip:            "%{::networking.ip}"
+    ssl_cert:             '/etc/pki/tls/certs/mycert.net.crt'
+    ssl_key:              '/etc/pki/tls/private/mycert.net.key'
+    use_default_location: false
+    rewrite_to_https:     true
+    index_files:          []
+nginx::nginx_locations:
+  '/':
+    location:             '/'
+    vhost:                'cognos'
+    ssl:                  true
+    ssl_only:             true
+    proxy:                "http://127.0.0.1:9300"
+    proxy_set_header:
+      - 'X-Forwarded-Proto $scheme'
+      - 'Host              $host'
+      - 'X-Forwarded-For   $proxy_add_x_forwarded_for'
+
+```
+
+
 ## Reference
 
 ### Class parameters
@@ -109,4 +213,56 @@ puppet-cognos/vagrant/
 puppet-cognos/vagrant/ca_srv_lnxi38664_11.0.5.16111917.bin
 puppet-cognos/vagrant/exp/
 puppet-cognos/vagrant/exp/db2setup
+```
+
+## Troubleshooting
+
+### Service logs
+Systemd will write the output of cogconfig.sh to /var/log/messages. To see what's going on, do this:
+```bash
+tail -f /var/log/messages
+```
+
+Cognos writes logs in many locations, but some good ones to start with are:
+```bash
+/var/log/cognos/common/cogserver.log
+/var/log/cognos/wlp/messages.log
+```
+
+Occasionally, logs will show up in:
+```bash
+/opt/ibm/cognos/analytics/wlp/usr/servers/cognosserver/workarea
+```
+
+### Log tools
+There's a nice Windows tool available that is available in the Windows versions of cognos, at `\bin\logviewV2.exe`.
+
+I use a local ELK stack running in Docker. I will post the Grok patterns to Github soon.
+
+### BI Filter
+For this error, try again in an incognito tab.
+
+```
+Error 404: javax.servlet.ServletException: Filter [BIFilter]: com.ibm.bi.platform.commons.web.filters.BIFilter was found, but is corrupt:
+```
+
+### On DB2
+Make sure db2 is running:
+```bash
+db2_ps
+```
+
+Check the db2 logs:
+```bash
+db2diag | less
+```
+
+To clear database inconsistency, the following has worked on occasion but may be destructive:
+```bash
+db2_ps # make sure no instances are running
+su - db2inst1
+ipclean
+exit
+systemctl start db2inst1
+db2_ps # service should now be running
 ```

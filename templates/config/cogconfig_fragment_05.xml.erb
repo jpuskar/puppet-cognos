@@ -12,13 +12,13 @@ Master configuration file for all IBM Cognos components.
  -->
 <crn:parameters xmlns:crn="http://developer.cognos.com/schemas/crconfig/1/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:cfg="http://developer.cognos.com/schemas/configparams/XMLSchema/1/" version="166.0" xsi:schemaLocation="http://developer.cognos.com/schemas/crconfig/1/ cogstartup.xsd">
   <crn:parameter name="edition">
-    <crn:value xsi:type="xsd:string">enterprise</crn:value>
+    <crn:value xsi:type="xsd:string"><%= scope['cognos::edition'] %></crn:value>
   </crn:parameter>
   <crn:parameter name="releaseType">
-    <crn:value xsi:type="xsd:string">ga</crn:value>
+    <crn:value xsi:type="xsd:string"><%= scope['cognos::release_type'] %></crn:value>
   </crn:parameter>
   <crn:parameter name="licenseType">
-    <crn:value xsi:type="xsd:string">production</crn:value>
+    <crn:value xsi:type="xsd:string"><%= scope['cognos::license_type'] %></crn:value>
   </crn:parameter>
   <!-- advancedProperties: Specifies a set of advanced properties.  -->
   <!-- The user needs to provide the name and the value for each advanced property.  -->
@@ -32,31 +32,31 @@ Master configuration file for all IBM Cognos components.
        override this value so that messages are logged using UTF8 encoding. To do this,
        set the value of the UTF8 encoding property to true for the Logging component.  -->
   <crn:parameter name="serverLocale">
-    <crn:value xsi:type="xsd:language">en</crn:value>
+    <crn:value xsi:type="xsd:language"><%= scope['cognos::server_locale'] %></crn:value>
   </crn:parameter>
   <!-- serverTimeZoneID: Specifies the time zone used by Content Manager.  -->
   <!-- Use this property to identify the time zone used by Content Manager. Time zones are
        used as the time reference in schedules and other system times.  -->
   <crn:parameter name="serverTimeZoneID">
-    <crn:value xsi:type="cfg:timeZone">Europe/Dublin</crn:value>
+    <crn:value xsi:type="cfg:timeZone"><%= scope['cognos::server_time_zone_id'] %></crn:value>
   </crn:parameter>
   <!-- defaultFont: Specifies the font used in PDF reports when no fonts can be found in
        the stylesheet to display the data.  -->
   <!-- Use one of the globally supported font names.  -->
   <crn:parameter name="defaultFont">
-    <crn:value xsi:type="xsd:string">Andale WT</crn:value>
+    <crn:value xsi:type="xsd:string"><%= scope['cognos::default_font'] %></crn:value>
   </crn:parameter>
   <!-- emailEncoding: Specifies the email encoding.  -->
   <!-- The specified encoding will be used for subject and body text when sending email.
        This has no effect on attachments or the HTML body.  -->
   <crn:parameter name="emailEncoding">
-    <crn:value xsi:type="xsd:string">utf-8</crn:value>
+    <crn:value xsi:type="xsd:string"><%= scope['cognos::email_encoding'] %></crn:value>
   </crn:parameter>
   <!-- bvMaxAttachmentSize: This parameter specifies the maximum size of a file attachment
        that can be uploaded to the Business Viewpoint server.  -->
   <!-- A value of 0 indicates that the maximum size is unlimited.  -->
   <crn:parameter name="bvMaxAttachmentSize" disabled="true">
-    <crn:value xsi:type="xsd:unsignedShort">1024</crn:value>
+    <crn:value xsi:type="xsd:unsignedShort"><%= scope['cognos::bv_max_attachment_size'] %>1024</crn:value>
   </crn:parameter>
   <!-- deploymentPath: Specifies the location where deployment archives are stored.  -->
   <!-- Because a deployment archive can contain sensitive information, for security reasons
@@ -120,7 +120,7 @@ Master configuration file for all IBM Cognos components.
        name portion of the gateway URI must be changed from localhost to an IP address or
        a network host name.  -->
   <crn:parameter name="gateway">
-    <crn:value xsi:type="xsd:anyURI">http://<%= @fqdn %>:9300/bi/v1/disp</crn:value>
+    <crn:value xsi:type="xsd:anyURI"><%= scope['cognos::gateway'] %></crn:value>
   </crn:parameter>
   <!-- gatewayNamespace: Specifies the Namespace ID of the authentication provider to which
        the gateway connects to verify user credentials.  -->
@@ -163,7 +163,9 @@ Master configuration file for all IBM Cognos components.
        a network host name or IP address rather than 'localhost'.  -->
   <crn:parameter name="gatewayDispatcherURIList" opaque="true">
     <crn:value xsi:type="cfg:sortedArray">
-      <crn:item xsi:type="xsd:anyURI" order="0">http://127.0.0.1:9300/bi/v1/disp</crn:item>
+    <% (scope['cognos::gateway_dispatcher_url_list']).each_with_index do |uri, index| %>
+      <crn:item xsi:type="xsd:anyURI" order="<%= index %>"><%= uri %></crn:item>
+    <% end %>
     </crn:value>
   </crn:parameter>
   <!-- controllerServerURI: Specifies the URI to the IBM Cognos Controller server, if present.  -->
