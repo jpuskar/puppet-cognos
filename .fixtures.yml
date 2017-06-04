@@ -4,4 +4,4 @@ fixtures:
   repositories:
     stdlib: "git://github.com/puppetlabs/puppetlabs-stdlib"
     firewalld: "git://github.com/crayfishx/puppet-firewalld"
-    #db2: "git://github.com/jpuskar/puppet-db2"
+    concat: "git://github.com/puppetlabs/puppetlabs-concat"

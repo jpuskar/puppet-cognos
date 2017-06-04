@@ -17,13 +17,10 @@ This module installs and configures a basic cognos server using db2.
 ## Setup
 
 ### Setup Requirements
-
-The cognos and db2 v10.1 install binaries must be pre-staged, and the parameter named 'installer_source_dir' configured.
++ The cognos install binary must be pre-staged and the parameters named `installer_source_dir` and `installer_filename` configured.
++ DB2 must already be installed, and the cognos class parameters `db2_install_path`, `db2_service_name`, and `db2_instance_user` must be correct. See init.pp for the defaults.
 
 ## Usage
-The param 'installer_source_dir' expects to find the folder ./exp.
-For example, if "/root" is specified, than this should exist: "/root/exp/db2"
-
 
 ```puppet
 class {'cognos':
@@ -36,19 +33,80 @@ class {'cognos':
 ```
 ## Reference
 
+### Class parameters
+
+#### `auth_provider_config`
+
+Configures authentication providers. For the full set of provider_config parameters, see the class `cognos::config::auth_provider::ipa`.
+
+Example from a manifest:
+```puppet
+$auth_providers => {
+  'ipa_1' => {
+    provider        => 'ipa',
+    provider_config => {
+      base_dn       => 'my_base_dn',
+      bind_username => 'my_bind_user',
+      bind_password => 'my_bind_pwd',
+      host_port     => 'my_dc.ipa.example',
+    }
+  }
+}
+
+class {'cognos':
+  cognos_user_password    => 'mypass',
+  cognos_db_user_password => 'mypass',
+  cog_users_password_salt => 'random phrase',
+  installer_source_dir    => '/root',
+  installer_filename      => 'ca_srv_lnxi38664_11.0.5.16111917.bin',
+  auth_provider_config    => $auth_providers,
+}
+```
+
+Example from hiera:
+```yaml
+cognos::auth_provider_config:
+  'ipa_1':
+    provider: 'ipa'
+    provider_config:
+      base_dn: 'my_base_dn'
+      bind_username: 'my_bind_user'
+      bind_password: 'my_bind_pwd'
+      host_port: 'my_dc.ipa.example'
+```
+
 Please see the individual manifest files for additional parameters.
 
 ## Limitations
 
-This module has only been tested with Cognos 11.0.5 using DB2 Express V10.1 on Centos 7.3.
+This module has only been tested with:
++ Cognos 11.0.5 using DB2 Express V10.1 on Centos 7.3.
++ Cognos 11.0.6 using DB2 Express V10.1 on Centos 7.3.
 
 In addition, it currently does not support:
 + Content Managers other than DB2 running on localhost.
 + Multiple servers / tires.
-+ Authentication providers of any kind.
++ Authentication providers other than IPA via LDAP.
+
 ## Development
 
-This module includes a Vagrantfile for easy testing. Just install vagrant and virtualbox, clone this repo, and 'vagrant up'.
+This module includes a Vagrantfile for easy testing.
 
-To stage the DB2 media, make a folder in the repo root called "vagrant", and ensure that the folder structure looks like: "./puppet-cognos/vagrant/exp/db2".
-The cognos installer file must also reside in "./puppet-cognos/vagrant".
+Steps to get started:
+1. Install vagrant.
+1. Install virtualbox.
+1. Clone this repo.
+1. Stage the Cognos and DB2 binares.
+1. Run `vagrant up` in a terminal window from the root of the repo.
+
+### Staging the binaries
+The Cognos installer file must reside in `./puppet-cognos/vagrant` and the db2 installer must be extracted.
+
+The folder structure must look like the following:
+```bash
+puppet-cognos/Vagrantfile
+puppet-cognos/vagrant/
+puppet-cognos/vagrant/ca_srv_lnxi38664_11.0.5.16111917.bin
+puppet-cognos/vagrant/exp/
+puppet-cognos/vagrant/exp/db2setup
+```
