@@ -14,8 +14,6 @@ class cognos::install::main {
   }
 
   # Input validation
-  # TODO: swap to validate_legacy()
-  #validate_legacy(Optional[String], 'validate_re', $db2::instance_user_password, ['^(?!vagrant$).*$'])
   validate_legacy(
     Optional[String],
     'validate_re',
@@ -62,8 +60,8 @@ class cognos::install::main {
 
   # Install Cognos
   $cog_install_cmd = @("END_COG_INSTALL_CMD"/$)
-export LAX_DEBUG=true
-./${cognos::installer_source_dir}/${cognos::installer_filename} -f ${response_file_name} -i silent
+  export LAX_DEBUG=true
+  ${cognos::installer_source_dir}/${cognos::installer_filename} -f ${response_file_name} -i silent
   | END_COG_INSTALL_CMD
 
   $cog_unless_cmd = @("END_COG_UNLESS_CMD"/$)

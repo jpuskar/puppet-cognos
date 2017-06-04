@@ -197,11 +197,11 @@ In addition, it currently does not support:
 This module includes a Vagrantfile for easy testing.
 
 Steps to get started:
-1. Install vagrant.
-1. Install virtualbox.
-1. Clone this repo.
-1. Stage the Cognos and DB2 binares.
-1. Run `vagrant up` in a terminal window from the root of the repo.
+ 1. Install vagrant.
+ 1. Install virtualbox.
+ 1. Clone this repo.
+ 1. Stage the Cognos and DB2 binares.
+ 1. Run `vagrant up` in a terminal window from the root of the repo.
 
 ### Staging the binaries
 The Cognos installer file must reside in `./puppet-cognos/vagrant` and the db2 installer must be extracted.
