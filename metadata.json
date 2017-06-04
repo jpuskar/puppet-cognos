@@ -11,7 +11,8 @@
     {"name":"puppetlabs-stdlib","version_requirement":">= 4.13.0"},
     {"name":"crayfishx-firewalld","version_requirement":">=3.3.1"},
     {"name":"puppet-selinux","version_requirement":">= 0.8.0"},
-    {"name":"puppetlabs-concat","version_requirement":">=1.2.4"}
+    {"name":"puppetlabs-concat","version_requirement":">=1.2.4"},
+    {"name":"jhoblitt-nsstools","version_requirement":">=2.0.0"}
   ],
   "data_provider": null
 }

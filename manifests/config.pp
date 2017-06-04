@@ -50,11 +50,13 @@ class cognos::config{
 
   if $cognos::manage_firewall {
     include '::firewalld'
-    firewalld_port { 'Open port 8080 in the public zone':
-      ensure   => present,
-      zone     => 'public',
-      port     => 9300,
-      protocol => 'tcp',
+    $cognos::firewall_ports_to_open.each | $cur_port | {
+      firewalld_port { "[cognos::config] Open port ${cur_port} in the public zone":
+        ensure   => present,
+        zone     => 'public',
+        port     => $cur_port,
+        protocol => 'tcp',
+      }
     }
   }
 
@@ -68,6 +70,7 @@ class cognos::config{
     }
   }
 
+  # Acutal config file
   concat { "${cognos::installer_target_dir}/configuration/cogstartup.puppet.xml":
     owner  => $cognos::cognos_user,
     group  => $cognos::cognos_user,
@@ -87,7 +90,7 @@ class cognos::config{
     order   => '20',
   }
 
-  # Configure Cognos
+  # Apply config file to Cognos
   $cog_conf_cmd = @("END_COG_CONF_CMD"/$)
 systemctl stop cognos || true
 cp ${cognos::installer_target_dir}/configuration/cogstartup.puppet.xml \
@@ -101,7 +104,7 @@ chown ${cognos::cognos_user}:${cognos::cognos_user} \
     provider    => 'shell',
     refreshonly => true,
     notify      => Service['cognos'],
-    require     => Concat["${cognos::installer_target_dir}/configuration/cogstartup.puppet.xml"],
+    require     => Concat_file["${cognos::installer_target_dir}/configuration/cogstartup.puppet.xml"],
   }
 
   # Add symlinks for intuitive log and config locations
@@ -124,6 +127,33 @@ chown ${cognos::cognos_user}:${cognos::cognos_user} \
     -> file { '/var/log/cognos/wlp':
       ensure => 'link',
       target => '/opt/ibm/cognos/analytics/wlp/usr/servers/cognosserver/logs',
+    }
+  }
+
+  # LDAPS Certs
+  if $cognos::manage_ldaps_cert_db and !is_empty($cognos::ldaps_public_certs_to_trust) {
+    include '::nsstools'
+
+    $cognos::ldaps_public_certs_to_trust.each | $cur_cert | {
+      ensure_resource(
+        'nsstools::create',
+        $cur_cert[cert_db_path],
+        {
+          owner          => $cognos::cognos_user,
+          group          => $cognos::cognos_user,
+          mode           => '0660',
+          password       => 'changeme',
+          manage_certdir => false,
+          enable_fips    => false,
+          before         => Exec['apply_new_cognos_config'],
+        }
+      )
+
+      nsstools::add_cert { $cur_cert[title]:
+        certdir => $cur_cert[cert_db_path],
+        cert    => $cur_cert[source_file],
+        before  => Exec['apply_new_cognos_config'],
+      }
     }
   }
 
