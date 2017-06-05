@@ -18,7 +18,10 @@ This module installs and configures a basic cognos server using db2.
 
 ### Setup Requirements
 + The cognos install binary must be pre-staged and the parameters named `installer_source_dir` and `installer_filename` configured.
-+ DB2 must already be installed, and the cognos class parameters `db2_install_path`, `db2_service_name`, and `db2_instance_user` must be correct. See init.pp for the defaults.
++ DB2 must already be installed\*, and the cognos class parameters `db2_install_path`, `db2_service_name`, and `db2_instance_user` must be correct. See init.pp for the defaults.
+
+\*Note: the provided Vagrantfile will install db2 using the jpuskar-db2 module. See the heading below labeled 'Development'.
+
 
 ## Usage
 
@@ -211,8 +214,9 @@ The folder structure must look like the following:
 puppet-cognos/Vagrantfile
 puppet-cognos/vagrant/
 puppet-cognos/vagrant/ca_srv_lnxi38664_11.0.5.16111917.bin
-puppet-cognos/vagrant/exp/
-puppet-cognos/vagrant/exp/db2setup
+puppet-cognos/vagrant/v10/
+puppet-cognos/vagrant/v10/exp/
+puppet-cognos/vagrant/v10/exp/db2setup
 ```
 
 ## Troubleshooting

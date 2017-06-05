@@ -56,7 +56,7 @@ Master configuration file for all IBM Cognos components.
        that can be uploaded to the Business Viewpoint server.  -->
   <!-- A value of 0 indicates that the maximum size is unlimited.  -->
   <crn:parameter name="bvMaxAttachmentSize" disabled="true">
-    <crn:value xsi:type="xsd:unsignedShort"><%= scope['cognos::bv_max_attachment_size'] %>1024</crn:value>
+    <crn:value xsi:type="xsd:unsignedShort"><%= scope['cognos::bv_max_attachment_size'] %></crn:value>
   </crn:parameter>
   <!-- deploymentPath: Specifies the location where deployment archives are stored.  -->
   <!-- Because a deployment archive can contain sensitive information, for security reasons

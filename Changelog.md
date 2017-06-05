@@ -1,5 +1,8 @@
 # puppet-cognos changelog
 
+## v0.1.4
++ Fixed bv_max_attachment_size bug.
+
 ## v0.1.3
 + Fixed install path bug.
 
