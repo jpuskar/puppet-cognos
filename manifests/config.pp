@@ -131,7 +131,7 @@ chown ${cognos::cognos_user}:${cognos::cognos_user} \
   }
 
   # LDAPS Certs
-  if $cognos::manage_ldaps_cert_db and !is_empty($cognos::ldaps_public_certs_to_trust) {
+  if $cognos::manage_ldaps_cert_db and !empty($cognos::ldaps_public_certs_to_trust) {
     include '::nsstools'
 
     $cognos::ldaps_public_certs_to_trust.each | $cur_cert | {
