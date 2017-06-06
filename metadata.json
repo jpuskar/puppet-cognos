@@ -1,6 +1,6 @@
 {
   "name": "jpuskar-cognos",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "author": "jpuskar",
   "summary": "Installs and configures Cognos.",
   "license": "Apache-2.0",
@@ -14,5 +14,9 @@
     {"name":"puppetlabs-concat","version_requirement":">=1.2.4"},
     {"name":"jhoblitt-nsstools","version_requirement":">=2.0.0"}
   ],
-  "data_provider": null
+  "data_provider": null,
+  "operatingsystem_support": [
+    {"operatingsystem": "RedHat","operatingsystemrelease": [ "7" ] },
+    {"operatingsystem": "CentOS","operatingsystemrelease": [ "7" ] }
+  ]
 }

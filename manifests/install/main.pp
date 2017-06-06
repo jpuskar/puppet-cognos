@@ -28,7 +28,7 @@ class cognos::install::main {
   )
 
   # If we're not in vagrant, then assert that our passwords aren't 'vagrant'.
-  if $::is_vagrant != 'true' { # lint:ignore:quoted_booleans
+  if str2bool($::is_vagrant) != true {
     validate_legacy(
       Optional[String],
       'validate_re',

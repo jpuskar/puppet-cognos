@@ -23,7 +23,7 @@ define cognos::config::auth_provider::ipa(
   $allow_empty_password            = false,
   $cam_id_attribute                = 'dn',
   $data_encoding                   = 'UTF-8',
-  $external_identity_mapping       = '${environment("REMOTE_USER")}',
+  $external_identity_mapping       = "\${environment(\"REMOTE_USER\")}",
   $folder_description              = 'description',
   $folder_name                     = 'ou',
   $folder_object_class             = 'organizationalunit,nsContainer,ou',
@@ -40,7 +40,7 @@ define cognos::config::auth_provider::ipa(
   $ssl_certificate_database        = undef,
   $use_external_identity           = false,
   $use_bind_credentials_for_search = true,
-  $user_lookup                     = '(uid=${userID})',
+  $user_lookup                     = "(uid=\${userID})",
 ) {
 
   if $ssl_certificate_database {
