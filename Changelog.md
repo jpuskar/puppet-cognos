@@ -1,5 +1,8 @@
 # puppet-cognos changelog
 
+## v0.1.5
++ Lint fixes.
+
 ## v0.1.4
 + Fixed bv_max_attachment_size bug.
 
