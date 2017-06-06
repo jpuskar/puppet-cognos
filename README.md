@@ -46,16 +46,12 @@ The Cognos certificate database can be managed with this module.
 $cert_db_path = '/opt/ibm/cognos/analytics/configuration'
 $ldaps_public_certs_to_trust = [
   {
-    'ipa_root_cert' => {
-      source_file  => '/etc/pki/ca-trust/source/anchors/ipa_root_cert_pub.pem',
-      cert_db_path => $cert_db_path,
-    }
+    source_file  => '/etc/pki/ca-trust/source/anchors/ipa_root_cert_pub.pem',
+    cert_db_path => $cert_db_path,
   },
   {
-    'ipa_dc1_cert' => {
-      source_file  => '/etc/pki/ca-trust/source/anchors/ipa_dc1_cert_pub.pem',
-      cert_db_path => $cert_db_path,
-    }
+    source_file  => '/etc/pki/ca-trust/source/anchors/ipa_dc1_cert_pub.pem',
+    cert_db_path => $cert_db_path,
   }
 ]
 
@@ -66,6 +62,7 @@ class {'cognos':
   installer_source_dir        => '/root',
   installer_filename          => 'ca_srv_lnxi38664_11.0.5.16111917.bin',
   ldaps_public_certs_to_trust => $ldaps_public_certs_to_trust,
+  manage_ldaps_cert_db        => true,
 }
 
 ```
@@ -270,3 +267,12 @@ exit
 systemctl start db2inst1
 db2_ps # service should now be running
 ```
+
+### AAA-AUT-0013
+```bash
+AAA-AUT-0013 The user is already authenticated in all available namespaces.
+```
+
+Make sure that `manage_ldaps_cert_db` is `true` and configured correctly. See the above section on TLS.
+
+Also, try checking for more info in `/var/log/cognos/common/cogconfig_response.csv`.
