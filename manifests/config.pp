@@ -149,7 +149,7 @@ chown ${cognos::cognos_user}:${cognos::cognos_user} \
         }
       )
 
-      nsstools::add_cert { $cur_cert[title]:
+      nsstools::add_cert { $cur_cert[source_file]:
         certdir => $cur_cert[cert_db_path],
         cert    => $cur_cert[source_file],
         before  => Exec['apply_new_cognos_config'],

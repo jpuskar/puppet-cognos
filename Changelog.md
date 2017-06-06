@@ -1,5 +1,8 @@
 # puppet-cognos changelog
 
+## v0.1.7
++ Fixed another cert database syntax error.
+
 ## v0.1.6
 + Fixed ldaps cert database syntax error.
 
