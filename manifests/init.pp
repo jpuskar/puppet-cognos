@@ -76,6 +76,7 @@ class cognos(
   Optional[Array]   $ldaps_public_certs_to_trust  = [],
   Optional[String]  $license_type                 = 'production',
   Optional[Boolean] $manage_firewall              = true,
+  Optional[Boolean] $manage_host_entry            = true,
   Optional[Boolean] $manage_ldaps_cert_db         = false,
   Optional[Integer] $pmp_max_memory               = 1024,
   Optional[String]  $release_type                 = 'ga',

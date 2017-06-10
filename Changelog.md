@@ -1,5 +1,8 @@
 # puppet-cognos changelog
 
+## v0.1.8
++ Added manage_host_entry parameter to make the host resource optional.
+
 ## v0.1.7
 + Fixed another cert database syntax error.
 
