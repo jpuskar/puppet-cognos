@@ -1,6 +1,6 @@
 {
   "name": "jpuskar-cognos",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "author": "jpuskar",
   "summary": "Installs and configures Cognos.",
   "license": "Apache-2.0",

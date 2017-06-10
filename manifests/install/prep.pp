@@ -26,10 +26,11 @@ class cognos::install::prep {
   }
 
   # Cognos won't start without this host entry
-  ensure_resource(
-    'host',
-    $::fqdn,
-    { ip => '127.0.0.1' }
-  )
-
+  if $cognos::manage_host_entry {
+    ensure_resource(
+      'host',
+      $::fqdn,
+      { ip => '127.0.0.1' }
+    )
+  }
 }
